@@ -1,19 +1,16 @@
 const nodemailer = require("nodemailer")
 
 const mailSender = async (email, title, body) => {
-  const mailUser = process.env.MAIL_USER || "mrspsidhauli@gmail.com"
-  const cleanPass = (process.env.MAIL_PASS || "gyut qfvt gfgs rreh").replace(/\s+/g, "")
-
   // 1. Try Vercel HTTPS Bridge (Port 443 - Bypasses cloud host SMTP port blocks)
   try {
     const vercelBridgeUrl = "https://study-notion-lms-gules.vercel.app/api/send-mail"
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 7000)
+    const timeoutId = setTimeout(() => controller.abort(), 9000)
 
     const bridgeRes = await fetch(vercelBridgeUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, title, body, user: mailUser, pass: cleanPass }),
+      body: JSON.stringify({ email, title, body }),
       signal: controller.signal,
     })
     clearTimeout(timeoutId)
@@ -30,6 +27,9 @@ const mailSender = async (email, title, body) => {
   }
 
   // 2. Direct SMTP fallback (Works on localhost and environments with open SMTP ports)
+  const mailUser = process.env.MAIL_USER || "mrspsidhauli@gmail.com"
+  const cleanPass = (process.env.MAIL_PASS || "gyut qfvt gfgs rreh").replace(/\s+/g, "")
+
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",

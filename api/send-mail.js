@@ -21,8 +21,8 @@ module.exports = async (req, res) => {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-    const mailUser = process.env.MAIL_USER || "mrspsidhauli@gmail.com";
-    const mailPass = (process.env.MAIL_PASS || "gyut qfvt gfgs rreh").replace(/\s+/g, "");
+    const mailUser = "mrspsidhauli@gmail.com";
+    const mailPass = "gyutqfvtgfgsrreh";
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
