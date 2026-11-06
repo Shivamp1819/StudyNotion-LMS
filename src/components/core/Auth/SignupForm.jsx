@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { toast } from "react-hot-toast"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
 import { sendOtp } from "../../../services/operations/authAPI"
@@ -12,6 +12,7 @@ import Tab from "../../Common/Tab"
 function SignupForm() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { loading } = useSelector((state) => state.auth)
 
   // student or instructor
   const [accountType, setAccountType] = useState(ACCOUNT_TYPE.STUDENT)
@@ -45,8 +46,10 @@ function SignupForm() {
       toast.error("Passwords Do Not Match")
       return
     }
+    const cleanEmail = formData.email.trim().toLowerCase()
     const signupData = {
       ...formData,
+      email: cleanEmail,
       accountType,
     }
 
@@ -54,17 +57,7 @@ function SignupForm() {
     // To be used after otp verification
     dispatch(setSignupData(signupData))
     // Send OTP to user for verification
-    dispatch(sendOtp(formData.email, navigate))
-
-    // Reset
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    })
-    setAccountType(ACCOUNT_TYPE.STUDENT)
+    dispatch(sendOtp(cleanEmail, navigate))
   }
 
   // data to pass to Tab component
@@ -183,9 +176,17 @@ function SignupForm() {
         </div>
         <button
           type="submit"
-          className="mt-6 rounded-[8px] bg-yellow-50 py-[8px] px-[12px] font-medium text-richblack-900"
+          disabled={loading}
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-[8px] bg-yellow-50 py-[10px] px-[12px] font-semibold text-richblack-900 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed shadow-md shadow-yellow-500/10"
         >
-          Create Account
+          {loading ? (
+            <>
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-richblack-900 border-t-transparent"></span>
+              <span>Sending Verification Code...</span>
+            </>
+          ) : (
+            "Create Account"
+          )}
         </button>
       </form>
     </div>

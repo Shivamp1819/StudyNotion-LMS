@@ -109,7 +109,7 @@ const passwordResetTemplate = (url, name = "Valued Learner") => {
         <a href="https://studynotion.com" target="_blank" style="text-decoration: none;">
           <img
             class="logo"
-            src="https://iili.io/nt2FEvf.png"
+            src="https://raw.githubusercontent.com/Shivamp1819/StudyNotion-LMS/main/src/assets/Logo/Logo-Full-Light.png"
             alt="StudyNotion Logo"
             width="180"
             style="max-width: 180px; height: auto; display: block; margin: 0 auto; border: 0;"

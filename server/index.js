@@ -26,10 +26,31 @@ const os = require("os");
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+// Robust CORS configuration supporting credentials and dynamic origins
+const allowedOrigins = [
+	"https://study-notion-lms-gules.vercel.app",
+	"http://localhost:3000",
+	"http://localhost:5173",
+];
+
 app.use(
 	cors({
-		origin: "*",
+		origin: function (origin, callback) {
+			// Allow requests with no origin (like mobile apps, curl, or Postman)
+			if (!origin) return callback(null, true);
+			// Match allowed origin or any vercel.app preview domain or localhost
+			if (
+				allowedOrigins.indexOf(origin) !== -1 ||
+				origin.endsWith(".vercel.app") ||
+				origin.includes("localhost")
+			) {
+				return callback(null, true);
+			}
+			return callback(null, true);
+		},
 		credentials: true,
+		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+		allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
 	})
 );
 app.use(

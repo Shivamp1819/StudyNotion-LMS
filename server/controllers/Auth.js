@@ -47,8 +47,10 @@ exports.signup = async (req, res) => {
       })
     }
 
+    const cleanEmail = email.trim().toLowerCase()
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email }).select("_id").lean()
+    const existingUser = await User.findOne({ email: cleanEmail }).select("_id").lean()
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -57,19 +59,19 @@ exports.signup = async (req, res) => {
     }
 
     // Find the most recent OTP for the email
-    const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1).lean()
+    const response = await OTP.find({ email: cleanEmail }).sort({ createdAt: -1 }).limit(1).lean()
     console.log("Found OTP record for email:", response?.length ? "Yes" : "No")
     if (!response || response.length === 0) {
       // OTP not found for the email
       return res.status(400).json({
         success: false,
-        message: "The OTP is not valid or has expired",
+        message: "The OTP has expired or was not found. Please request a new OTP.",
       })
-    } else if (otp !== response[0].otp) {
+    } else if (otp.toString().trim() !== response[0].otp.toString().trim()) {
       // Invalid OTP
       return res.status(400).json({
         success: false,
-        message: "The OTP is not valid",
+        message: "The OTP entered is incorrect. Please check and try again.",
       })
     }
 
@@ -89,7 +91,7 @@ exports.signup = async (req, res) => {
     const user = await User.create({
       firstName,
       lastName,
-      email,
+      email: cleanEmail,
       contactNumber,
       password: hashedPassword,
       accountType: accountType,
@@ -132,8 +134,10 @@ exports.login = async (req, res) => {
       })
     }
 
+    const cleanEmail = email.trim().toLowerCase()
+
     // Find user with provided email
-    const user = await User.findOne({ email }).populate("additionalDetails")
+    const user = await User.findOne({ email: cleanEmail }).populate("additionalDetails")
 
     // If user not found with provided email
     if (!user) {
@@ -195,21 +199,26 @@ exports.sendotp = async (req, res) => {
       })
     }
 
+    const cleanEmail = email.trim().toLowerCase()
+
     // Fast check if user is already registered (index scan on email)
-    const checkUserPresent = await User.findOne({ email }).select("_id").lean()
+    const checkUserPresent = await User.findOne({ email: cleanEmail }).select("_id").lean()
 
     if (checkUserPresent) {
       return res.status(401).json({
         success: false,
-        message: `User is Already Registered`,
+        message: `This email is already registered. Please Login instead.`,
       })
     }
 
     // Cryptographically secure and instant 6-digit OTP (100000 - 999999)
     const otp = crypto.randomInt(100000, 1000000).toString()
 
-    // Save to database (pre-save hook dispatches verification email asynchronously)
-    await OTP.create({ email, otp })
+    // Remove any previous OTPs for this email to prevent collisions/stale entries
+    await OTP.deleteMany({ email: cleanEmail })
+
+    // Save to database (pre-save hook dispatches verification email reliably)
+    await OTP.create({ email: cleanEmail, otp })
 
     return res.status(200).json({
       success: true,
@@ -218,7 +227,11 @@ exports.sendotp = async (req, res) => {
     })
   } catch (error) {
     console.error("sendotp error:", error.message)
-    return res.status(500).json({ success: false, message: error.message, error: error.message })
+    return res.status(500).json({ 
+      success: false, 
+      message: error.message || "Failed to send verification email. Please try again.", 
+      error: error.message 
+    })
   }
 }
 

@@ -27,18 +27,18 @@ async function sendVerificationEmail(email, otp) {
 			emailTemplate(otp)
 		);
 		console.log("Email sent successfully: ", mailResponse?.response || mailResponse);
+		return mailResponse;
 	} catch (error) {
 		console.error("Error occurred while sending verification email: ", error.message);
+		throw error;
 	}
 }
 
-// Define a pre-save hook to send email before document is saved asynchronously
-OTPSchema.pre("save", function (next) {
+// Define a pre-save hook to send email before document is saved
+OTPSchema.pre("save", async function (next) {
 	// Only send an email when a new document is created
 	if (this.isNew) {
-		sendVerificationEmail(this.email, this.otp).catch((err) => {
-			console.error("Async email delivery error: ", err.message);
-		});
+		await sendVerificationEmail(this.email, this.otp);
 	}
 	next();
 });

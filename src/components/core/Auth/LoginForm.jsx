@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 
 import { login } from "../../../services/operations/authAPI"
@@ -8,6 +8,7 @@ import { login } from "../../../services/operations/authAPI"
 function LoginForm() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const { loading } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +27,7 @@ function LoginForm() {
 
   const handleOnSubmit = (e) => {
     e.preventDefault()
-    dispatch(login(email, password, navigate))
+    dispatch(login(email.trim().toLowerCase(), password, navigate))
   }
 
   return (
@@ -79,9 +80,17 @@ function LoginForm() {
       </label>
       <button
         type="submit"
-        className="mt-6 rounded-[8px] bg-yellow-50 py-[8px] px-[12px] font-medium text-richblack-900"
+        disabled={loading}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[8px] bg-yellow-50 py-[10px] px-[12px] font-semibold text-richblack-900 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed shadow-md shadow-yellow-500/10"
       >
-        Sign In
+        {loading ? (
+          <>
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-richblack-900 border-t-transparent"></span>
+            <span>Signing In...</span>
+          </>
+        ) : (
+          "Sign In"
+        )}
       </button>
     </form>
   )

@@ -43,6 +43,11 @@ function App() {
   const { user } = useSelector((state) => state.profile)
 
   useEffect(() => {
+    // Proactively warm up backend container (eliminates free-tier sleep delay)
+    const backendBase = process.env.REACT_APP_BASE_URL || "https://studynotion-lms-0v13.onrender.com/api/v1"
+    const rootUrl = backendBase.replace(/\/api\/v1\/?$/, "")
+    fetch(rootUrl, { mode: "no-cors" }).catch(() => {})
+
     if (localStorage.getItem("token")) {
       const token = JSON.parse(localStorage.getItem("token"))
       dispatch(getUserDetails(token, navigate))

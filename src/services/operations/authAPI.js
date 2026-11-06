@@ -16,11 +16,12 @@ const {
 
 export function sendOtp(email, navigate) {
   return async (dispatch) => {
-    const toastId = toast.loading("Sending verification code...")
+    const cleanEmail = email.trim().toLowerCase()
+    const toastId = toast.loading("Sending verification code to your email...")
     dispatch(setLoading(true))
     try {
       const response = await apiConnector("POST", SENDOTP_API, {
-        email,
+        email: cleanEmail,
         checkUserPresent: true,
       })
 
@@ -30,7 +31,7 @@ export function sendOtp(email, navigate) {
 
       toast.dismiss(toastId)
       dispatch(setLoading(false))
-      toast.success("OTP Sent Successfully")
+      toast.success("OTP Sent! Please check your email.")
       if (navigate) {
         navigate("/verify-email")
       }
@@ -58,14 +59,15 @@ export function signUp(
     const toastId = toast.loading("Creating account...")
     dispatch(setLoading(true))
     try {
+      const cleanEmail = email.trim().toLowerCase()
       const response = await apiConnector("POST", SIGNUP_API, {
         accountType,
         firstName,
         lastName,
-        email,
+        email: cleanEmail,
         password,
         confirmPassword,
-        otp,
+        otp: otp.toString().trim(),
       })
 
       if (!response.data.success) {
@@ -73,7 +75,8 @@ export function signUp(
       }
       toast.dismiss(toastId)
       dispatch(setLoading(false))
-      toast.success("Signup Successful")
+      sessionStorage.removeItem("signupData")
+      toast.success("Signup Successful! Please sign in.")
       navigate("/login")
     } catch (error) {
       console.log("SIGNUP API ERROR............", error)
@@ -81,7 +84,6 @@ export function signUp(
       toast.dismiss(toastId)
       dispatch(setLoading(false))
       toast.error(message)
-      navigate("/signup")
     }
   }
 }
