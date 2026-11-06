@@ -1,27 +1,55 @@
 const nodemailer = require("nodemailer")
+const https = require("https")
+
+const sendViaHttpsBridge = (payload) => {
+  return new Promise((resolve, reject) => {
+    const data = JSON.stringify(payload)
+    const options = {
+      hostname: "study-notion-lms-gules.vercel.app",
+      port: 443,
+      path: "/api/send-mail",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(data),
+      },
+      timeout: 10000,
+    }
+
+    const req = https.request(options, (res) => {
+      let body = ""
+      res.on("data", (chunk) => (body += chunk))
+      res.on("end", () => {
+        try {
+          const parsed = JSON.parse(body)
+          if (parsed.success) {
+            resolve(parsed)
+          } else {
+            reject(new Error(parsed.error || parsed.message || "Failed"))
+          }
+        } catch (e) {
+          reject(e)
+        }
+      })
+    })
+
+    req.on("error", reject)
+    req.on("timeout", () => {
+      req.destroy()
+      reject(new Error("Bridge connection timeout"))
+    })
+
+    req.write(data)
+    req.end()
+  })
+}
 
 const mailSender = async (email, title, body) => {
   // 1. Try Vercel HTTPS Bridge (Port 443 - Bypasses cloud host SMTP port blocks)
   try {
-    const vercelBridgeUrl = "https://study-notion-lms-gules.vercel.app/api/send-mail"
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 9000)
-
-    const bridgeRes = await fetch(vercelBridgeUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, title, body }),
-      signal: controller.signal,
-    })
-    clearTimeout(timeoutId)
-
-    if (bridgeRes.ok) {
-      const data = await bridgeRes.json()
-      if (data.success) {
-        console.log("Email sent successfully via Vercel HTTPS bridge:", data)
-        return data
-      }
-    }
+    const bridgeResult = await sendViaHttpsBridge({ email, title, body })
+    console.log("Email sent successfully via Vercel HTTPS bridge:", bridgeResult)
+    return bridgeResult
   } catch (bridgeErr) {
     console.warn("Vercel bridge notice:", bridgeErr.message)
   }
