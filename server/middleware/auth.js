@@ -10,9 +10,9 @@ exports.auth = async (req, res, next) => {
 	try {
 		// Extracting JWT from request cookies, body or header
 		const token =
-			req.cookies.token ||
-			req.body.token ||
-			req.header("Authorization").replace("Bearer ", "");
+			(req.cookies && req.cookies.token) ||
+			(req.body && req.body.token) ||
+			req.header("Authorization")?.replace("Bearer ", "");
 
 		// If JWT is missing, return 401 Unauthorized response
 		if (!token) {
@@ -46,7 +46,7 @@ exports.isStudent = async (req, res, next) => {
 	try {
 		const userDetails = await User.findOne({ email: req.user.email });
 
-		if (userDetails.accountType !== "Student") {
+		if (!userDetails || userDetails.accountType !== "Student") {
 			return res.status(401).json({
 				success: false,
 				message: "This is a Protected Route for Students",
@@ -63,7 +63,7 @@ exports.isAdmin = async (req, res, next) => {
 	try {
 		const userDetails = await User.findOne({ email: req.user.email });
 
-		if (userDetails.accountType !== "Admin") {
+		if (!userDetails || userDetails.accountType !== "Admin") {
 			return res.status(401).json({
 				success: false,
 				message: "This is a Protected Route for Admin",
@@ -81,9 +81,9 @@ exports.isInstructor = async (req, res, next) => {
 		const userDetails = await User.findOne({ email: req.user.email });
 		console.log(userDetails);
 
-		console.log(userDetails.accountType);
+		console.log(userDetails?.accountType);
 
-		if (userDetails.accountType !== "Instructor") {
+		if (!userDetails || userDetails.accountType !== "Instructor") {
 			return res.status(401).json({
 				success: false,
 				message: "This is a Protected Route for Instructor",

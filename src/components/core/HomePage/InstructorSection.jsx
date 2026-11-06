@@ -11,8 +11,8 @@ const InstructorSection = () => {
           <div className="lg:w-[50%]">
             <img
               src={Instructor}
-              alt=""
-              className="shadow-white shadow-[-20px_-20px_0_0]"
+              alt="Become an Instructor"
+              className="rounded-2xl shadow-2xl shadow-richblack-700/60 border border-richblack-700/80 hover:scale-[1.02] transition-all duration-300 object-cover w-full"
             />
           </div>
           <div className="lg:w-[50%] flex gap-10 flex-col">

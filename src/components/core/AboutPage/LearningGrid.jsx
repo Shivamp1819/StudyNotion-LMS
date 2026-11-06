@@ -8,78 +8,77 @@ const LearningGridArray = [
     heading: "World-Class Learning for",
     highliteText: "Anyone, Anywhere",
     description:
-      "Studynotion partners with more than 275+ leading universities and companies to bring flexible, affordable, job-relevant online learning to individuals and organizations worldwide.",
-    BtnText: "Learn More",
-    BtnLink: "/",
+      "Studynotion partners with leading tech leaders and global companies to bring flexible, affordable, and job-relevant online education to passionate learners worldwide.",
+    BtnText: "Explore Courses",
+    BtnLink: "/catalog",
   },
   {
     order: 1,
     heading: "Curriculum Based on Industry Needs",
     description:
-      "Save time and money! The Belajar curriculum is made to be easier to understand and in line with industry needs.",
+      "Save time and master in-demand tech stacks! Our curriculum is continuously updated alongside top engineers to match modern tech company hiring standards.",
   },
   {
     order: 2,
-    heading: "Our Learning Methods",
+    heading: "Interactive Learning Methods",
     description:
-      "Studynotion partners with more than 275+ leading universities and companies to bring",
+      "Learn by building production-grade software from day one with hands-on labs, guided walkthroughs, and architectural case studies.",
   },
   {
     order: 3,
-    heading: "Certification",
+    heading: "Industry-Recognized Certification",
     description:
-      "Studynotion partners with more than 275+ leading universities and companies to bring",
+      "Earn verifiable credentials and portfolio capstones upon graduation that showcase your proven competencies to recruiters globally.",
   },
   {
     order: 4,
-    heading: `Rating "Auto-grading"`,
+    heading: "Automated Code Grading",
     description:
-      "Studynotion partners with more than 275+ leading universities and companies to bring",
+      "Receive instantaneous intelligent feedback, comprehensive test suite evaluations, and optimization tips on all your code submissions.",
   },
   {
     order: 5,
-    heading: "Ready to Work",
+    heading: "Ready for the Global Job Market",
     description:
-      "Studynotion partners with more than 275+ leading universities and companies to bring",
+      "Graduate with complete resume-ready projects, behavioral & technical interview prep, and direct exposure to top hiring networks.",
   },
 ];
 
 const LearningGrid = () => {
   return (
-    <div className="grid mx-auto w-[350px] xl:w-fit grid-cols-1 xl:grid-cols-4 mb-12">
+    <div className="grid mx-auto w-full max-w-maxContent grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
       {LearningGridArray.map((card, i) => {
         return (
           <div
             key={i}
-            className={`${i === 0 && "xl:col-span-2 xl:h-[294px]"}  ${
-              card.order % 2 === 1
-                ? "bg-richblack-700 h-[294px]"
-                : card.order % 2 === 0
-                ? "bg-richblack-800 h-[294px]"
-                : "bg-transparent"
-            } ${card.order === 3 && "xl:col-start-2"}  `}
+            className={`${
+              card.order === -1
+                ? "md:col-span-2 lg:col-span-2 bg-gradient-to-br from-richblack-800 to-richblack-900 border border-richblack-700/80 p-8 rounded-2xl shadow-xl flex flex-col justify-between"
+                : "flex flex-col justify-between p-8 rounded-2xl bg-richblack-800/90 border border-richblack-700/80 shadow-lg hover:border-yellow-50/40 hover:scale-[1.02] transition-all duration-300"
+            }`}
           >
             {card.order < 0 ? (
-              <div className="xl:w-[90%] flex flex-col gap-3 pb-10 xl:pb-0">
-                <div className="text-4xl font-semibold ">
-                  {card.heading}
+              <div className="flex flex-col gap-4">
+                <div className="text-3xl lg:text-4xl font-semibold leading-tight">
+                  {card.heading}{" "}
                   <HighlightText text={card.highliteText} />
                 </div>
-                <p className="text-richblack-300 font-medium">
+                <p className="text-richblack-300 font-medium text-base leading-relaxed">
                   {card.description}
                 </p>
 
-                <div className="w-fit mt-2">
+                <div className="w-fit mt-4">
                   <CTAButton active={true} linkto={card.BtnLink}>
                     {card.BtnText}
                   </CTAButton>
                 </div>
               </div>
             ) : (
-              <div className="p-8 flex flex-col gap-8">
-                <h1 className="text-richblack-5 text-lg">{card.heading}</h1>
-
-                <p className="text-richblack-300 font-medium">
+              <div className="flex flex-col gap-4">
+                <h1 className="text-richblack-5 font-semibold text-xl leading-snug">
+                  {card.heading}
+                </h1>
+                <p className="text-richblack-300 font-normal text-sm leading-relaxed">
                   {card.description}
                 </p>
               </div>

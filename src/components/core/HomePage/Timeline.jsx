@@ -55,29 +55,28 @@ const TimelineSection = () => {
             );
           })}
         </div>
-        <div className="relative w-fit h-fit shadow-blue-200 shadow-[0px_0px_30px_0px]">
-          <div className="absolute lg:left-[50%] lg:bottom-0 lg:translate-x-[-50%] lg:translate-y-[50%] bg-caribbeangreen-700 flex lg:flex-row flex-col text-white uppercase py-5 gap-4 lg:gap-0 lg:py-10 ">
+        <div className="relative w-fit h-fit shadow-[0_20px_50px_rgba(0,0,0,0.35)] rounded-2xl">
+          <div className="absolute z-10 lg:left-[50%] lg:bottom-0 lg:translate-x-[-50%] lg:translate-y-[50%] bg-caribbeangreen-700 flex lg:flex-row flex-col text-white uppercase py-5 gap-4 lg:gap-0 lg:py-8 rounded-2xl shadow-xl border border-caribbeangreen-500/40">
             {/* Section 1 */}
-            <div className="flex gap-5 items-center lg:border-r border-caribbeangreen-300 px-7 lg:px-14">
-              <h1 className="text-3xl font-bold w-[75px]">10</h1>
-              <h1 className="text-caribbeangreen-300 text-sm w-[75px]">
-                Years experiences
+            <div className="flex gap-5 items-center lg:border-r border-caribbeangreen-300/60 px-7 lg:px-10">
+              <h1 className="text-3xl font-bold w-[75px]">10+</h1>
+              <h1 className="text-caribbeangreen-200 text-xs w-[75px] font-semibold leading-tight">
+                Years of Excellence
               </h1>
             </div>
 
             {/* Section 2 */}
-            <div className="flex gap-5 items-center lg:px-14 px-7">
-              <h1 className="text-3xl font-bold w-[75px]">250</h1>
-              <h1 className="text-caribbeangreen-300 text-sm w-[75px]">
-                types of courses
+            <div className="flex gap-5 items-center lg:px-10 px-7">
+              <h1 className="text-3xl font-bold w-[75px]">250+</h1>
+              <h1 className="text-caribbeangreen-200 text-xs w-[75px] font-semibold leading-tight">
+                Specialized Courses
               </h1>
             </div>
-            <div></div>
           </div>
           <img
             src={TimeLineImage}
-            alt="timelineImage"
-            className="shadow-white shadow-[20px_20px_0px_0px] object-cover h-[400px] lg:h-fit"
+            alt="StudyNotion Career Timeline"
+            className="rounded-2xl shadow-xl border border-richblack-700/60 object-cover h-[400px] lg:h-fit hover:scale-[1.01] transition-all duration-300"
           />
         </div>
       </div>

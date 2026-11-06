@@ -1,4 +1,3 @@
-import { FcGoogle } from "react-icons/fc"
 import { useSelector } from "react-redux"
 
 import frameImg from "../../../assets/Images/frame.png"
@@ -33,6 +32,7 @@ function Template({ title, description1, description2, image, formType }) {
               width={558}
               height={504}
               loading="lazy"
+              className="rounded-2xl"
             />
             <img
               src={image}
@@ -40,7 +40,7 @@ function Template({ title, description1, description2, image, formType }) {
               width={558}
               height={504}
               loading="lazy"
-              className="absolute -top-4 right-4 z-10"
+              className="absolute -top-4 right-4 z-10 rounded-2xl object-cover shadow-2xl shadow-richblack-900 border border-richblack-700/60"
             />
           </div>
         </div>

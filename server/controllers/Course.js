@@ -53,11 +53,9 @@ exports.createCourse = async (req, res) => {
       status = "Draft"
     }
     // Check if the user is an instructor
-    const instructorDetails = await User.findById(userId, {
-      accountType: "Instructor",
-    })
+    const instructorDetails = await User.findById(userId)
 
-    if (!instructorDetails) {
+    if (!instructorDetails || instructorDetails.accountType !== "Instructor") {
       return res.status(404).json({
         success: false,
         message: "Instructor Details Not Found",
@@ -450,8 +448,21 @@ exports.deleteCourse = async (req, res) => {
       return res.status(404).json({ message: "Course not found" })
     }
 
+    // Verify if the current user is the course instructor
+    if (course.instructor.toString() !== req.user.id && req.user.accountType !== "Admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this course",
+      })
+    }
+
+    // Remove course from instructor's courses list
+    await User.findByIdAndUpdate(course.instructor, {
+      $pull: { courses: courseId },
+    })
+
     // Unenroll students from the course
-    const studentsEnrolled = course.studentsEnroled
+    const studentsEnrolled = course.studentsEnroled || []
     for (const studentId of studentsEnrolled) {
       await User.findByIdAndUpdate(studentId, {
         $pull: { courses: courseId },
@@ -459,7 +470,7 @@ exports.deleteCourse = async (req, res) => {
     }
 
     // Delete sections and sub-sections
-    const courseSections = course.courseContent
+    const courseSections = course.courseContent || []
     for (const sectionId of courseSections) {
       // Delete sub-sections of the section
       const section = await Section.findById(sectionId)

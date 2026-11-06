@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { BiInfoCircle } from "react-icons/bi"
 import { HiOutlineGlobeAlt } from "react-icons/hi"
+import { FaShareAlt } from "react-icons/fa"
 import { ReactMarkdown } from "react-markdown/lib/react-markdown"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
+import copy from "copy-to-clipboard"
+import { toast } from "react-hot-toast"
 
 import ConfirmationModal from "../components/Common/ConfirmationModal"
 import Footer from "../components/Common/Footer"
@@ -13,6 +16,8 @@ import CourseDetailsCard from "../components/core/Course/CourseDetailsCard"
 import { formatDate } from "../services/formatDate"
 import { fetchCourseDetails } from "../services/operations/courseDetailsAPI"
 import { BuyCourse } from "../services/operations/studentFeaturesAPI"
+import { addToCart } from "../slices/cartSlice"
+import { ACCOUNT_TYPE } from "../utils/constants"
 import GetAvgRating from "../utils/avgRating"
 import Error from "./Error"
 
@@ -62,7 +67,7 @@ function CourseDetails() {
     setIsActive(
       !isActive.includes(id)
         ? isActive.concat([id])
-        : isActive.filter((e) => e != id)
+        : isActive.filter((e) => e !== id)
     )
   }
 
@@ -88,7 +93,6 @@ function CourseDetails() {
   }
 
   const {
-    _id: course_id,
     courseName,
     courseDescription,
     thumbnail,
@@ -114,6 +118,30 @@ function CourseDetails() {
       btn1Handler: () => navigate("/login"),
       btn2Handler: () => setConfirmationModal(null),
     })
+  }
+
+  const handleAddToCart = () => {
+    if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+      toast.error("You are an Instructor. You cannot purchase a course.")
+      return
+    }
+    if (token) {
+      dispatch(addToCart(response?.data?.courseDetails))
+      return
+    }
+    setConfirmationModal({
+      text1: "You are not logged in!",
+      text2: "Please login to add this course to your cart.",
+      btn1Text: "Login",
+      btn2Text: "Cancel",
+      btn1Handler: () => navigate("/login"),
+      btn2Handler: () => setConfirmationModal(null),
+    })
+  }
+
+  const handleShareCourse = () => {
+    copy(window.location.href)
+    toast.success("Course link copied to clipboard!")
   }
 
   if (paymentLoading) {
@@ -159,15 +187,19 @@ function CourseDetails() {
                   Created By {`${instructor.firstName} ${instructor.lastName}`}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-5 text-lg">
-                <p className="flex items-center gap-2">
-                  {" "}
+              <div className="flex flex-wrap items-center gap-4 text-base">
+                <p className="flex items-center gap-2 text-richblack-200">
                   <BiInfoCircle /> Created at {formatDate(createdAt)}
                 </p>
-                <p className="flex items-center gap-2">
-                  {" "}
+                <p className="flex items-center gap-2 text-richblack-200">
                   <HiOutlineGlobeAlt /> English
                 </p>
+                <button
+                  onClick={handleShareCourse}
+                  className="flex items-center gap-1.5 rounded-lg border border-richblack-600 bg-richblack-700/60 px-3 py-1 text-xs font-medium text-yellow-50 hover:bg-richblack-700 transition-colors"
+                >
+                  <FaShareAlt /> Share Course
+                </button>
               </div>
             </div>
             <div className="flex w-full flex-col gap-4 border-y border-y-richblack-500 py-4 lg:hidden">
@@ -177,7 +209,9 @@ function CourseDetails() {
               <button className="yellowButton" onClick={handleBuyCourse}>
                 Buy Now
               </button>
-              <button className="blackButton">Add to Cart</button>
+              <button className="blackButton" onClick={handleAddToCart}>
+                Add to Cart
+              </button>
             </div>
           </div>
           {/* Courses Card */}
@@ -216,10 +250,18 @@ function CourseDetails() {
                 </div>
                 <div>
                   <button
-                    className="text-yellow-25"
-                    onClick={() => setIsActive([])}
+                    className="text-yellow-25 hover:underline font-medium text-xs sm:text-sm"
+                    onClick={() => {
+                      if (isActive.length === courseContent.length) {
+                        setIsActive([])
+                      } else {
+                        setIsActive(courseContent.map((sec) => sec._id))
+                      }
+                    }}
                   >
-                    Collapse all sections
+                    {isActive.length === courseContent.length
+                      ? "Collapse all sections"
+                      : "Expand all sections"}
                   </button>
                 </div>
               </div>

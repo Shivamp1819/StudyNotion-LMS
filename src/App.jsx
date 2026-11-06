@@ -19,12 +19,14 @@ import MyProfile from "./components/core/Dashboard/MyProfile"
 import Settings from "./components/core/Dashboard/Settings"
 import VideoDetails from "./components/core/ViewCourse/VideoDetails"
 import About from "./pages/About"
+import AllCatalog from "./pages/AllCatalog"
 import Catalog from "./pages/Catalog"
 import Contact from "./pages/Contact"
 import CourseDetails from "./pages/CourseDetails"
 import Dashboard from "./pages/Dashboard"
 import Error from "./pages/Error"
 import ForgotPassword from "./pages/ForgotPassword"
+import StaticInfo from "./pages/StaticInfo"
 // Pages
 import Home from "./pages/Home"
 import Login from "./pages/Login"
@@ -55,8 +57,78 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="courses/:courseId" element={<CourseDetails />} />
-        <Route path="catalog/:catalogName" element={<Catalog />} />
+        <Route path="/courses/:courseId" element={<CourseDetails />} />
+        <Route path="/catalog" element={<AllCatalog />} />
+        <Route path="/categories" element={<AllCatalog />} />
+        <Route path="/full-catalog" element={<AllCatalog />} />
+        <Route path="/catalog/:catalogName" element={<Catalog />} />
+
+        {/* Career & Technical Resource Hub Pages */}
+        <Route path="/interview-prep" element={<StaticInfo />} />
+        <Route path="/professional-certification" element={<StaticInfo />} />
+        <Route path="/certifications" element={<StaticInfo />} />
+        <Route path="/career-paths" element={<StaticInfo />} />
+        <Route path="/career-services" element={<StaticInfo />} />
+        <Route path="/code-challenges" element={<StaticInfo />} />
+        <Route path="/docs" element={<StaticInfo />} />
+        <Route path="/chart-sheet" element={<StaticInfo />} />
+        <Route path="/cheat-sheet" element={<StaticInfo />} />
+        <Route path="/help-center" element={<StaticInfo />} />
+        <Route path="/faq" element={<StaticInfo />} />
+        <Route path="/careers" element={<StaticInfo />} />
+        <Route path="/affiliates" element={<StaticInfo />} />
+        <Route path="/community" element={<StaticInfo />} />
+        <Route path="/forums" element={<StaticInfo />} />
+        <Route path="/chapters" element={<StaticInfo />} />
+        <Route path="/events" element={<StaticInfo />} />
+        <Route path="/articles" element={<StaticInfo />} />
+        <Route path="/blog" element={<StaticInfo />} />
+        <Route path="/projects" element={<StaticInfo />} />
+        <Route path="/videos" element={<StaticInfo />} />
+        <Route path="/workspaces" element={<StaticInfo />} />
+        <Route path="/paid-memberships" element={<StaticInfo />} />
+        <Route path="/for-students" element={<StaticInfo />} />
+        <Route path="/business-solutions" element={<StaticInfo />} />
+        <Route path="/beta-content" element={<StaticInfo />} />
+
+        {/* Legal & Policy Pages */}
+        <Route path="/privacy-policy" element={<StaticInfo />} />
+        <Route path="/terms" element={<StaticInfo />} />
+        <Route path="/terms-of-service" element={<StaticInfo />} />
+        <Route path="/cookie-policy" element={<StaticInfo />} />
+
+        {/* Direct Subject & Technology Catalog Routes */}
+        <Route path="/web-development" element={<Catalog />} />
+        <Route path="/python" element={<Catalog />} />
+        <Route path="/javascript" element={<Catalog />} />
+        <Route path="/c++" element={<Catalog />} />
+        <Route path="/java" element={<Catalog />} />
+        <Route path="/cloud-computing" element={<Catalog />} />
+        <Route path="/machine-learning" element={<Catalog />} />
+        <Route path="/data-science" element={<Catalog />} />
+        <Route path="/data-analytics" element={<Catalog />} />
+        <Route path="/data-visualization" element={<Catalog />} />
+        <Route path="/developer-tools" element={<Catalog />} />
+        <Route path="/devops" element={<Catalog />} />
+        <Route path="/game-development" element={<Catalog />} />
+        <Route path="/cybersecurity" element={<Catalog />} />
+        <Route path="/mobile-development" element={<Catalog />} />
+        <Route path="/web-design" element={<Catalog />} />
+        <Route path="/math" element={<Catalog />} />
+        <Route path="/it" element={<Catalog />} />
+        <Route path="/code-foundations" element={<Catalog />} />
+        <Route path="/computer-science" element={<Catalog />} />
+        <Route path="/bash" element={<Catalog />} />
+        <Route path="/csharp" element={<Catalog />} />
+        <Route path="/go" element={<Catalog />} />
+        <Route path="/html-css" element={<Catalog />} />
+        <Route path="/kotlin" element={<Catalog />} />
+        <Route path="/php" element={<Catalog />} />
+        <Route path="/r" element={<Catalog />} />
+        <Route path="/ruby" element={<Catalog />} />
+        <Route path="/sql" element={<Catalog />} />
+        <Route path="/swift" element={<Catalog />} />
+        <Route path="/al" element={<Catalog />} />
         {/* Open Route - for Only Non Logged in User */}
         <Route
           path="login"
