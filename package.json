@@ -20,6 +20,7 @@
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.8.0",
     "react-markdown": "^8.0.7",
+    "nodemailer": "^6.9.1",
     "react-otp-input": "^3.0.0",
     "react-rating-stars-component": "^2.2.0",
     "react-redux": "^8.0.5",
