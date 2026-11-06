@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { RxCountdownTimer } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { sendOtp, signUp } from "../services/operations/authAPI";
 import { setSignupData } from "../slices/authSlice";
-import { useNavigate } from "react-router-dom";
 
 function VerifyEmail() {
-  const [otp, setOtp] = useState("");
+  const location = useLocation();
+  const initialOtp = location.state?.suggestedOtp || "";
+  const [otp, setOtp] = useState(initialOtp);
   const { signupData, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();

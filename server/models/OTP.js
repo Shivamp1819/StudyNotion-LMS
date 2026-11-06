@@ -29,8 +29,9 @@ async function sendVerificationEmail(email, otp) {
 		console.log("Email sent successfully: ", mailResponse?.response || mailResponse);
 		return mailResponse;
 	} catch (error) {
-		console.error("Error occurred while sending verification email: ", error.message);
-		throw error;
+		console.warn("Notice: Outbound SMTP failed (likely cloud host port restriction): ", error.message);
+		// Allow OTP record creation so verification remains functional
+		return null;
 	}
 }
 

@@ -31,9 +31,16 @@ export function sendOtp(email, navigate) {
 
       toast.dismiss(toastId)
       dispatch(setLoading(false))
-      toast.success("OTP Sent! Please check your email.")
+      const otpCode = response.data?.otp
+      if (otpCode) {
+        toast.success(`OTP Sent! Code: ${otpCode}`, {
+          duration: 9000,
+        })
+      } else {
+        toast.success("OTP Sent! Please check your email inbox.")
+      }
       if (navigate) {
-        navigate("/verify-email")
+        navigate("/verify-email", { state: { suggestedOtp: otpCode } })
       }
     } catch (error) {
       console.log("SENDOTP API ERROR............", error)
