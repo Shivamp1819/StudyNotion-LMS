@@ -1,32 +1,24 @@
 const nodemailer = require("nodemailer")
 
-let cachedTransporter = null
-
-const getTransporter = () => {
-  if (cachedTransporter) return cachedTransporter
-
-  const cleanPass = process.env.MAIL_PASS ? process.env.MAIL_PASS.replace(/\s+/g, "") : ""
-
-  cachedTransporter = nodemailer.createTransport({
-    service: "gmail",
-    host: process.env.MAIL_HOST || "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    pool: true,
-    maxConnections: 5,
-    maxMessages: 100,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: cleanPass || process.env.MAIL_PASS,
-    },
-  })
-
-  return cachedTransporter
-}
-
 const mailSender = async (email, title, body) => {
   try {
-    const transporter = getTransporter()
+    const cleanPass = process.env.MAIL_PASS ? process.env.MAIL_PASS.replace(/\s+/g, "") : ""
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.MAIL_HOST || "smtp.gmail.com",
+      port: 587,
+      secure: false, // Standard Port 587 with STARTTLS (avoids cloud firewall timeouts on port 465)
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: cleanPass || process.env.MAIL_PASS,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+      tls: {
+        rejectUnauthorized: false,
+      },
+    })
 
     const info = await transporter.sendMail({
       from: `"StudyNotion - Online Education" <${process.env.MAIL_USER}>`,
@@ -39,7 +31,6 @@ const mailSender = async (email, title, body) => {
     return info
   } catch (error) {
     console.error("Error occurred while sending mail in mailSender: ", error.message)
-    cachedTransporter = null
     throw error
   }
 }
